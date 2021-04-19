@@ -6730,6 +6730,20 @@ void tx_and_sidetone_key (int state)
         byte previous_ptt_line_activated = ptt_line_activated;
         ptt_key();
         if (current_tx_key_line) {digitalWrite (current_tx_key_line, tx_key_line_active_state);}
+
+        #ifdef FEATURE_WINKEY_EMULATION
+        #ifndef OPTION_WINKEY_SEND_BREAKIN_STATUS_BYTE
+        #ifdef OPTION_WINKEY_2_SUPPORT
+        #ifdef OPTION_WINKEY_TX_KEY_LINE_SUPPORT
+        if ((winkey_host_open) && (wk2_mode == 2)) {   // if winkey is open and in wk2 mode, tell it about the key line
+          byte winkey_byte_to_send = 0xc8 | 1;
+          winkey_port_write(winkey_byte_to_send, 0);
+        }
+        #endif //OPTION_WINKEY_TX_KEY_LINE_SUPPORT
+        #endif //OPTION_WINKEY_2_SUPPORT
+        #endif //OPTION_WINKEY_SEND_BREAKIN_STATUS_BYTE
+        #endif //FEATURE_WINKEY_EMULATION
+
         #if defined(OPTION_WINKEY_2_SUPPORT) && defined(FEATURE_WINKEY_EMULATION) && !defined(FEATURE_SO2R_BASE)
           if ((wk2_both_tx_activated) && (tx_key_line_2)) {
             digitalWrite (tx_key_line_2, HIGH);
@@ -6753,6 +6767,20 @@ void tx_and_sidetone_key (int state)
       if ((state == 0) && (key_state)) {
         if (key_tx) {
           if (current_tx_key_line) {digitalWrite (current_tx_key_line, tx_key_line_inactive_state);}
+
+          #ifdef FEATURE_WINKEY_EMULATION
+          #ifndef OPTION_WINKEY_SEND_BREAKIN_STATUS_BYTE
+          #ifdef OPTION_WINKEY_2_SUPPORT
+          #ifdef OPTION_WINKEY_TX_KEY_LINE_SUPPORT
+          if ((winkey_host_open) && (wk2_mode == 2)) {   // if winkey is open and in wk2 mode, tell it about the key line
+            byte winkey_byte_to_send = 0xc8;
+            winkey_port_write(winkey_byte_to_send, 0);
+          }
+          #endif //OPTION_WINKEY_TX_KEY_LINE_SUPPORT
+          #endif //OPTION_WINKEY_2_SUPPORT
+          #endif //OPTION_WINKEY_SEND_BREAKIN_STATUS_BYTE
+          #endif //FEATURE_WINKEY_EMULATION
+
           #if defined(OPTION_WINKEY_2_SUPPORT) && defined(FEATURE_WINKEY_EMULATION) && !defined(FEATURE_SO2R_BASE)
             if ((wk2_both_tx_activated) && (tx_key_line_2)) {
               digitalWrite (tx_key_line_2, LOW);
@@ -6780,6 +6808,20 @@ void tx_and_sidetone_key (int state)
           ptt_key();
         }
         if (current_tx_key_line) {digitalWrite (current_tx_key_line, tx_key_line_active_state);}
+
+        #ifdef FEATURE_WINKEY_EMULATION
+        #ifndef OPTION_WINKEY_SEND_BREAKIN_STATUS_BYTE
+        #ifdef OPTION_WINKEY_2_SUPPORT
+        #ifdef OPTION_WINKEY_TX_KEY_LINE_SUPPORT
+        if ((winkey_host_open) && (wk2_mode == 2)) {   // if winkey is open and in wk2 mode, tell it about the key line
+          byte winkey_byte_to_send = 0xc8 | 1;
+          winkey_port_write(winkey_byte_to_send, 0);
+        }
+        #endif //OPTION_WINKEY_TX_KEY_LINE_SUPPORT
+        #endif //OPTION_WINKEY_2_SUPPORT
+        #endif //OPTION_WINKEY_SEND_BREAKIN_STATUS_BYTE
+        #endif //FEATURE_WINKEY_EMULATION
+
         #if defined(OPTION_WINKEY_2_SUPPORT) && defined(FEATURE_WINKEY_EMULATION) && !defined(FEATURE_SO2R_BASE)
           if ((wk2_both_tx_activated) && (tx_key_line_2)) {
             digitalWrite (tx_key_line_2, HIGH);
@@ -6803,6 +6845,20 @@ void tx_and_sidetone_key (int state)
       if ((state == 0) && (key_state)) {
         if (key_tx) {
           if (current_tx_key_line) {digitalWrite (current_tx_key_line, tx_key_line_inactive_state);}
+
+          #ifdef FEATURE_WINKEY_EMULATION
+          #ifndef OPTION_WINKEY_SEND_BREAKIN_STATUS_BYTE
+          #ifdef OPTION_WINKEY_2_SUPPORT
+          #ifdef OPTION_WINKEY_TX_KEY_LINE_SUPPORT
+          if ((winkey_host_open) && (wk2_mode == 2)) {   // if winkey is open and in wk2 mode, tell it about the key line
+            byte winkey_byte_to_send = 0xc8;
+            winkey_port_write(winkey_byte_to_send, 0);
+          }
+          #endif //OPTION_WINKEY_TX_KEY_LINE_SUPPORT
+          #endif //OPTION_WINKEY_2_SUPPORT
+          #endif //OPTION_WINKEY_SEND_BREAKIN_STATUS_BYTE
+          #endif //FEATURE_WINKEY_EMULATION
+
           #if defined(OPTION_WINKEY_2_SUPPORT) && defined(FEATURE_WINKEY_EMULATION) && !defined(FEATURE_SO2R_BASE)
             if ((wk2_both_tx_activated) && (tx_key_line_2)) {
               digitalWrite (tx_key_line_2, LOW);
@@ -8954,6 +9010,7 @@ void check_buttons() {
             add_to_send_buffer(SERIAL_SEND_BUFFER_MEMORY_NUMBER);
             add_to_send_buffer(analogbuttontemp - 1);
           #else //OPTION_WINKEY_2_SUPPORT
+            #ifndef OPTION_WINKEY_TX_KEY_LINE_SUPPORT
             if ((winkey_host_open) && (wk2_mode == 2)) {   // if winkey is open and in wk2 mode, tell it about the button press
               byte winkey_byte_to_send = 0xc8;
               switch(analogbuttontemp) {
@@ -8968,6 +9025,7 @@ void check_buttons() {
               add_to_send_buffer(SERIAL_SEND_BUFFER_MEMORY_NUMBER);
               add_to_send_buffer(analogbuttontemp - 1);
             }  
+            #endif //OPTION_WINKEY_TX_KEY_LINE_SUPPORT
           #endif //OPTION_WINKEY_2_SUPPORT
         #else //FEATURE_WINKEY_EMULATION
           add_to_send_buffer(SERIAL_SEND_BUFFER_MEMORY_NUMBER);
@@ -11978,7 +12036,11 @@ void service_winkey(byte action) {
               debug_serial_port->println("service_winkey:ADMIN_CMD sethighbaudrate");
             #endif //DEBUG_WINKEY            
             primary_serial_port->end();
+            #ifdef OPTION_WINKEY_VERY_HIGH_BAUD_RATE
+            primary_serial_port->begin(115200);
+            #else
             primary_serial_port->begin(9600);
+            #endif //OPTION_WINKEY_VERY_HIGH_BAUD_RATE
             winkey_status = WINKEY_NO_COMMAND_IN_PROGRESS;
             break;
           case 0x12: // set low baud rate (18)
