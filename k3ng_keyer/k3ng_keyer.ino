@@ -15974,39 +15974,37 @@ int convert_cw_number_to_ascii (long number_in)
     case 22211: return 56; break;
     case 22221: return 57; break;
     case 112211: return '?'; break;  // ?
-    case 21121: return 47; break;   // /
-    #if !defined(OPTION_PROSIGN_SUPPORT)
-      case 2111212: return '*'; break; // BK 
-    #endif 
+    case 21121: return '/'; break;   // <DN>
 //    case 221122: return '!'; break;  // ! sp5iou 20180328
     case 221122: return ','; break; 
     case 121212: return '.'; break;
-    case 122121: return '@'; break;
-    case 222222: return 92; break;  // special hack; six dahs = \ (backslash)
-    case 21112: return '='; break;  // BT
-    case 211112: return '-'; break;
+    case 122121: return '@'; break; // <AC>
+    case 222222: return 92;  break; // special hack; six dahs = \ (backslash)
+    case 21112:  return '='; break; // <BT>
+    case 211112: return '-'; break; // <DU>
     //case 2222222: return '+'; break;
     case 9: return 32; break;       // special 9 = space
+    case 12121: return '+'; break; // <AR>
 
-    #ifndef OPTION_PS2_NON_ENGLISH_CHAR_LCD_DISPLAY_SUPPORT
-      case 12121: return '+'; break;
-    #else
-
-      case 212122: return 33; break; // ! //sp5iou
-      case 1112112: return 36; break; // $ //sp5iou
+    #ifdef OPTION_PS2_NON_ENGLISH_CHAR_LCD_DISPLAY_SUPPORT
+      // "prosigns"
+      case 121121:  return '"';  break; // <RR>
+      case 1112112: return '$';  break; // <SX>
+      case 122221:  return '\''; break; // <WG>
+      case 212212:  return ')';  break; // <KK>
+      case 1212:    return ';';  break; // <AA>
+      case 2111212: return '#';  break; // <BK>
+      case 11121:   return '%';  break; // <SN>
       #if !defined(OPTION_PROSIGN_SUPPORT)
-        case 12111: return 38; break; // & // sp5iou
-      #endif  
-      case 122221: return 39; break; // ' // sp5iou
-      case 121121: return 34; break; // " // sp5iou
-      case 112212: return 95; break; // _ // sp5iou
-      case 212121: return 59; break; // ; // sp5iou
-      case 222111: return 58; break; // : // sp5iou
-      case 212212: return 41; break; // KK (stored as ascii ) ) // sp5iou
-      #if !defined(OPTION_PROSIGN_SUPPORT)
-        case 111212: return 62; break; // SK (stored as ascii > ) // sp5iou
+        case 111212: return '>'; break; // <SK>
+        case 12111:  return '&'; break; // <AS>
       #endif
-      case 12121: return 60; break; // AR (store as ascii < ) // sp5iou
+
+      // punc
+      case 212122: return '!'; break;
+      case 112212: return '_'; break;
+      case 212121: return ';'; break;
+      case 222111: return ':'; break;
     #endif //OPTION_PS2_NON_ENGLISH_CHAR_LCD_DISPLAY_SUPPORT
 
 
@@ -16024,7 +16022,7 @@ int convert_cw_number_to_ascii (long number_in)
       case 11121:    return PROSIGN_SN; break;
       case 11111111: return PROSIGN_HH; break;  // iz0rus
     #else //OPTION_PROSIGN_SUPPORT
-      case 21221: return 40; break; // (KN store as ascii ( ) //sp5iou //aaaaaaa
+      case 21221: return '('; break; // <KN>
     #endif //OPTION_PROSIGN_SUPPORT
 
     #ifdef OPTION_NON_ENGLISH_EXTENSIONS
