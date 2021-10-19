@@ -9022,8 +9022,10 @@ void check_buttons() {
               winkey_port_write(winkey_byte_to_send,0);
               winkey_port_write(0xc8,0); // tell it that the button is unpressed
             } else {  // otherwise, have the buttons act as normal
+            #endif //OPTION_WINKEY_TX_KEY_LINE_SUPPORT
               add_to_send_buffer(SERIAL_SEND_BUFFER_MEMORY_NUMBER);
               add_to_send_buffer(analogbuttontemp - 1);
+            #ifndef OPTION_WINKEY_TX_KEY_LINE_SUPPORT
             }  
             #endif //OPTION_WINKEY_TX_KEY_LINE_SUPPORT
           #endif //OPTION_WINKEY_2_SUPPORT
